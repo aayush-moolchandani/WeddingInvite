@@ -95,10 +95,8 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
       audioRef.current.addEventListener('error', handleError);
       audioRef.current.addEventListener('stalled', handleStalled);
 
-      // Start loading the music immediately (only if not mobile)
-      if (!isMobile) {
-        audioRef.current.load();
-      }
+      // Music will be preloaded by LoadingScreen, so we don't load here
+      // This prevents duplicate loading and improves performance
     }
 
     return () => {

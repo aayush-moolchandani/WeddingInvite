@@ -1,16 +1,27 @@
 import { motion } from 'framer-motion';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import Navigation from './components/Navigation';
 import HeroSection from './components/HeroSection';
 import WeddingSchedule from './components/WeddingSchedule';
 import PhotoGallery from './components/PhotoGallery';
 import MusicPlayer from './components/MusicPlayer';
+import LoadingScreen from './components/LoadingScreen';
 import { Analytics } from '@vercel/analytics/react';
 
 // Lazy load heavy components
 const PhotoEditor = lazy(() => import('./components/PhotoEditor'));
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+
+  if (isLoading) {
+    return <LoadingScreen onComplete={handleLoadingComplete} />;
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
