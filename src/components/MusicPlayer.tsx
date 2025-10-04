@@ -12,7 +12,6 @@ interface MusicPlayerProps {
 const MusicPlayer = ({}: MusicPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false); // Start as stopped
   const [isMuted, setIsMuted] = useState(false);
-  const [showPlayPrompt, setShowPlayPrompt] = useState(true); // Show play prompt initially
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -21,7 +20,65 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
     audioRef.current.loop = true;
     audioRef.current.volume = 0.4; // 40% volume
     audioRef.current.muted = isMuted;
+    audioRef.current.preload = "auto";
     
+    // Multiple auto-play attempts
+    const attemptAutoPlay = async () => {
+      if (audioRef.current) {
+        try {
+          await audioRef.current.play();
+          setIsPlaying(true);
+        } catch (error) {
+          console.log('Auto-play blocked by browser');
+          
+          // Try again after user scrolls
+          const handleScroll = async () => {
+            if (audioRef.current && !isPlaying) {
+              try {
+                await audioRef.current.play();
+                setIsPlaying(true);
+                window.removeEventListener('scroll', handleScroll);
+                window.removeEventListener('mousemove', handleMouseMove);
+              } catch (e) {
+                console.log('Still blocked');
+              }
+            }
+          };
+          
+          const handleMouseMove = async () => {
+            if (audioRef.current && !isPlaying) {
+              try {
+                await audioRef.current.play();
+                setIsPlaying(true);
+                window.removeEventListener('scroll', handleScroll);
+                window.removeEventListener('mousemove', handleMouseMove);
+              } catch (e) {
+                console.log('Still blocked');
+              }
+            }
+          };
+          
+          // Try on first scroll or mouse movement
+          window.addEventListener('scroll', handleScroll, { once: true });
+          window.addEventListener('mousemove', handleMouseMove, { once: true });
+          
+          // Final attempt after 2 seconds
+          setTimeout(async () => {
+            if (audioRef.current && !isPlaying) {
+              try {
+                await audioRef.current.play();
+                setIsPlaying(true);
+              } catch (e) {
+                console.log('All auto-play attempts failed');
+              }
+            }
+          }, 2000);
+        }
+      }
+    };
+    
+    // Start auto-play after component mounts
+    setTimeout(attemptAutoPlay, 500);
     
     // Cleanup on unmount
     return () => {
@@ -29,19 +86,11 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
         audioRef.current.pause();
         audioRef.current = null;
       }
+      window.removeEventListener('scroll', attemptAutoPlay);
+      window.removeEventListener('mousemove', attemptAutoPlay);
     };
   }, []);
 
-  const startMusic = () => {
-    if (audioRef.current) {
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-        setShowPlayPrompt(false);
-      }).catch(() => {
-        console.log('Could not start music');
-      });
-    }
-  };
 
   const toggleMute = () => {
     if (audioRef.current) {
@@ -85,33 +134,13 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
         </div>
       )}
 
-      {/* Music Controls */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-3">
-        {/* Play Prompt */}
-        {showPlayPrompt && (
+      {/* Minimal Music Control - Only Visible When Playing */}
+      {isPlaying && (
+        <div className="fixed bottom-4 right-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="pointer-events-auto"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={startMusic}
-              className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <Volume2 size={18} />
-              <span className="text-sm font-medium">🎵 Play Music</span>
-            </motion.button>
-          </motion.div>
-        )}
-        
-        {/* Mute Control */}
-        {isPlaying && (
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="pointer-events-auto"
+            transition={{ delay: 1 }}
           >
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -119,12 +148,12 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
               onClick={toggleMute}
               className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              {isMuted ? <VolumeX size={18} className="text-gray-500" /> : <Volume2 size={18} className="text-purple-600" />}
-              <span className="text-xs text-gray-600 font-medium">Music {isMuted ? 'Off' : 'On'}</span>
+              {isMuted ? <VolumeX size={16} className="text-gray-500" /> : <Volume2 size={16} className="text-purple-600" />}
+              <span className="text-xs text-gray-600 font-medium">{isMuted ? 'Music Off' : 'Music On'}</span>
             </motion.button>
           </motion.div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 };
