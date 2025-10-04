@@ -71,11 +71,9 @@ function App() {
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8 text-gray-600">
               <div>
                 <h5 className="font-medium text-gray-700">📞 R.S.V.P.</h5>
-                <p className="text-sm">Mr. Ramesh Moolchandani</p>
-                <p className="text-sm font-mono">8383812671</p>
+                <p className="font-medium text-gray-700">👨‍👩‍👧‍👦 Moolchandani Family & Guwalani Family</p>
               </div>
               <div>
-                <h5 className="font-medium text-gray-700">👨‍👩‍👧‍👦 Moolchandani Family & Guwalani Family</h5>
                 <p className="text-sm">Mr. Ramesh Moolchandani & Mrs. Sakshi Moolchandani</p>
                 <p className="text-sm">Mr. Rajeev Chadha & Mrs. Jyoti Chadha</p>
                 <p className="text-xs text-gray-500">(Parents of Aayush & Tanya)</p>

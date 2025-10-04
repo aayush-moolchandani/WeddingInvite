@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX, Heart, Star } from 'lucide-react';
+import { Volume2, VolumeX, Heart, Star, Mail } from 'lucide-react';
 
 // Import the music file
 import weddingMusic from '../assets/couple/music.mp3';
@@ -467,6 +467,34 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
           ))}
         </div>
       )}
+
+      {/* Floating Invite Button */}
+      <motion.button
+        onClick={openInvitation}
+        className="fixed bottom-6 right-6 z-[9998] bg-gradient-to-r from-pink-500 to-rose-500 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center justify-center group"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2, duration: 0.5 }}
+      >
+        <Mail className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" />
+        <span className="ml-2 font-semibold text-sm hidden sm:block">Open Invite</span>
+        
+        {/* Pulse animation ring */}
+        <motion.div
+          className="absolute inset-0 rounded-full border-2 border-pink-300"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.7, 0, 0.7],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      </motion.button>
     </>
   );
 };
