@@ -28,11 +28,11 @@ const WeddingSchedule = React.memo(() => {
   const events: EventData[] = [
     {
       id: 'janehu',
-      title: 'Janeu',
+      title: 'Janeu Ceremony',
       time: '11 AM',
-      description: 'Traditional wedding rituals begin',
-      venue: 'Green Lounge North',
-      venueAddress: 'Green Lounge, Wazirpur, Delhi, India',
+      description: 'A sacred Hindu ritual where the groom receives the sacred thread, marking his readiness for marriage. This traditional ceremony symbolizes spiritual awakening and preparation for a blessed marital union.',
+      venue: 'The Green Lounge Wazirpur',
+      venueAddress: 'The Green Lounge, Wazirpur, Delhi, India',
       venueImage: greenLoungeImage,
       icon: <Flower2 />,
       color: 'text-emerald-600',
@@ -42,19 +42,19 @@ const WeddingSchedule = React.memo(() => {
       id: 'haldi',
       title: 'Haldi Ceremony',
       time: '12 PM',
-      description: 'Turmeric blessing ceremony',
-      venue: 'Green Lounge North',
-      venueAddress: 'Green Lounge, Wazirpur, Delhi, India',
+      description: 'A vibrant pre-wedding ceremony where turmeric paste and sacred threads are applied to the bride and groom. This auspicious ritual purifies, strengthens their bond, and brings good luck for their married life ahead.',
+      venue: 'The Green Lounge Wazirpur',
+      venueAddress: 'The Green Lounge, Wazirpur, Delhi, India',
       venueImage: greenLoungeImage,
       icon: <Flower2 />,
       color: 'text-amber-600',
       bgColor: 'bg-gradient-to-br from-amber-50 to-yellow-50',
     },
     {
-      id: 'sagai',
-      title: 'Sagai',
+      id: 'engagement',
+      title: 'Engagement Ceremony',
       time: '8 PM',
-      description: 'Engagement celebration',
+      description: 'An intimate ceremony where families exchange rings and formalize the commitment between the couple. This joyous celebration marks the official beginning of their journey towards matrimonial union.',
       venue: 'The Grandeur by Lavanya',
       venueAddress: 'The Grandeur by Lavanya, banquet hall, Delhi, India',
       venueImage: lavanyaImage,
@@ -64,23 +64,23 @@ const WeddingSchedule = React.memo(() => {
     },
     {
       id: 'saat-shagun',
-      title: 'Saath',
+      title: 'Blessing Ceremony',
       time: '11 AM',
-      description: 'Seven blessings ceremony',
+      description: 'A sacred prayer ceremony where elders bless the couple and seek divine protection for their marriage. This spiritual ritual ensures a blessed beginning and heavenly guidance throughout their life together.',
       venue: 'Salt Stayz',
       venueAddress: 'Salt Stayz Hotel, Delhi, India',
       venueImage: saltStaysImage,
       icon: <Users />,
-      color: 'text-slate-600',
-      bgColor: 'bg-gradient-to-br from-slate-50 to-gray-50',
+      color: 'text-purple-600',
+      bgColor: 'bg-gradient-to-br from-purple-50 to-indigo-50',
     },
     {
       id: 'shaadi',
-      title: 'Marriage',
+      title: 'Wedding Ceremony',
       time: '8 PM',
-      description: 'Main wedding ceremony',
-      venue: 'The Grandreams Nouveau Palaces',
-      venueAddress: 'The Grandreams Nouveau Palaces, Mayapuri Industrial Area, Delhi',
+      description: 'The grand finale where Aayush and Tanya officially become husband and wife in the presence of family and friends. This beautiful ceremony sanctifies their eternal bond with sacred vows, fire rituals, and seven sacred steps.',
+      venue: 'The Grand Dreams Mayapuri',
+      venueAddress: 'The Grand Dreams Mayapuri, Mayapuri Industrial Area, Delhi',
       venueImage: grandDreamsImage,
       icon: <Flower2 />,
       color: 'text-red-600',
@@ -203,7 +203,7 @@ const WeddingSchedule = React.memo(() => {
                   onMouseEnter={() => {
                     if (event.id === 'janehu') setActiveEventAnimation('janayu');
                     else if (event.id === 'haldi') setActiveEventAnimation('haldi');
-                    else if (event.id === 'sagai') setActiveEventAnimation('sagai');
+                    else if (event.id === 'engagement') setActiveEventAnimation('sagai');
                     else if (event.id === 'saat-shagun') setActiveEventAnimation('pooja');
                     else if (event.id === 'shaadi') setActiveEventAnimation('shaadi');
                   }}
@@ -216,7 +216,7 @@ const WeddingSchedule = React.memo(() => {
                   {(event.id === 'haldi' && activeEventAnimation === 'haldi') && (
                     <EventAnimations eventType="haldi" isVisible={true} />
                   )}
-                  {(event.id === 'sagai' && activeEventAnimation === 'sagai') && (
+                  {(event.id === 'engagement' && activeEventAnimation === 'sagai') && (
                     <EventAnimations eventType="sagai" isVisible={true} />
                   )}
                   {(event.id === 'saat-shagun' && activeEventAnimation === 'pooja') && (
@@ -244,9 +244,11 @@ const WeddingSchedule = React.memo(() => {
                     <span className={`${event.color} font-medium`}>{event.time}</span>
                   </div>
                   
-                  <p className="text-gray-600 leading-relaxed mb-4">
-                    {event.description}
-                  </p>
+                  <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 mb-4 shadow-sm hover:shadow-md transition-shadow">
+                    <p className="text-gray-700 leading-relaxed text-sm font-medium">
+                      {event.description}
+                    </p>
+                  </div>
 
                   {/* Venue Image */}
                   <div className="aspect-[4/3] overflow-hidden rounded-2xl mb-4">
@@ -319,7 +321,7 @@ const WeddingSchedule = React.memo(() => {
                   onMouseEnter={() => {
                     if (event.id === 'janehu') setActiveEventAnimation('janayu');
                     else if (event.id === 'haldi') setActiveEventAnimation('haldi');
-                    else if (event.id === 'sagai') setActiveEventAnimation('sagai');
+                    else if (event.id === 'engagement') setActiveEventAnimation('sagai');
                     else if (event.id === 'saat-shagun') setActiveEventAnimation('pooja');
                     else if (event.id === 'shaadi') setActiveEventAnimation('shaadi');
                   }}
@@ -332,7 +334,7 @@ const WeddingSchedule = React.memo(() => {
                   {(event.id === 'haldi' && activeEventAnimation === 'haldi') && (
                     <EventAnimations eventType="haldi" isVisible={true} />
                   )}
-                  {(event.id === 'sagai' && activeEventAnimation === 'sagai') && (
+                  {(event.id === 'engagement' && activeEventAnimation === 'sagai') && (
                     <EventAnimations eventType="sagai" isVisible={true} />
                   )}
                   {(event.id === 'saat-shagun' && activeEventAnimation === 'pooja') && (
@@ -360,9 +362,11 @@ const WeddingSchedule = React.memo(() => {
                     <span className={`${event.color} font-medium`}>{event.time}</span>
                   </div>
                   
-                  <p className="text-gray-600 leading-relaxed mb-4">
-                    {event.description}
-                  </p>
+                  <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 mb-4 shadow-sm hover:shadow-md transition-shadow">
+                    <p className="text-gray-700 leading-relaxed text-sm font-medium">
+                      {event.description}
+                    </p>
+                  </div>
 
                   {/* Venue Image */}
                   <div className="aspect-[4/3] overflow-hidden rounded-2xl mb-4">

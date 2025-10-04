@@ -193,7 +193,7 @@ const HeroSection = React.memo(() => {
             className="mb-8 text-center"
           >
             <div className="text-lg md:text-xl text-amber-600 font-semibold mb-3 tracking-wide">
-              🌸 OM ganesha namah🌸
+              🌸 Let's Celebrate Love Together 🌸
             </div>
             <div className="max-w-3xl mx-auto text-sm md:text-base text-gray-600 leading-relaxed">
               "Salutations to Lord Ganesha, the one with the curved trunk<br/>
@@ -255,7 +255,7 @@ const HeroSection = React.memo(() => {
                     
                     {/* Hashtag */}
                     <div className="text-xs text-amber-700 font-medium mt-2 px-4 py-1 bg-gradient-to-r from-amber-100 to-orange-100 rounded-full inline-block border border-amber-200">
-                      #aayushKitanipartner
+                      #AayushKiTaniPartner
                     </div>
               
               <motion.h3 
@@ -279,8 +279,8 @@ const HeroSection = React.memo(() => {
                 <span className="font-semibold text-purple-600">Tanya</span>
               </div>
               
-              <p className="text-gray-600 text-sm italic">Together with their families</p>
-              <p className="text-gray-500 text-xs mt-1">cordially invite you to celebrate their union</p>
+              <p className="text-gray-600 text-sm italic">Along with our amazing families</p>
+              <p className="text-gray-500 text-xs mt-1">we warmly invite you to celebrate our wedding journey</p>
             </motion.div>
           </div>
         </motion.div>

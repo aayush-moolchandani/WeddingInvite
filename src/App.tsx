@@ -5,6 +5,7 @@ import WeddingSchedule from './components/WeddingSchedule';
 import PhotoGallery from './components/PhotoGallery';
 import PhotoEditor from './components/PhotoEditor';
 import MusicPlayer from './components/MusicPlayer';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   return (
@@ -87,13 +88,16 @@ function App() {
             <span>•</span>
             <p>With Love, Aayush & Tanya</p>
             <span>•</span>
-            <p className="text-orange-600 font-medium">#aayushKitanipartner</p>
+                 <p className="text-orange-600 font-medium">#AayushKiTaniPartner</p>
           </div>
         </div>
       </motion.footer>
       
       {/* Music Player */}
       <MusicPlayer />
+      
+      {/* Analytics */}
+      <Analytics />
     </div>
   );
 }
