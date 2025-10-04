@@ -5,8 +5,8 @@ import { Volume2, VolumeX, Heart, Star, Download } from 'lucide-react';
 // Import the music file
 import weddingMusic from '../assets/couple/music.mp3';
 
-// Import the eInvite video
-import eInviteVideo from '../assets/couple/Aayush Digital Invitation Card 01.mp4';
+// Check if we're in development mode (where video file exists)
+const hasVideo = !import.meta.env.PROD;
 
 interface MusicPlayerProps {
   autoplay?: boolean;
@@ -103,12 +103,12 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
   };
 
   const handleVideoDownload = () => {
-    const link = document.createElement('a');
-    link.href = eInviteVideo;
-    link.download = 'Aayush-Tanya-Wedding-Invitation.mp4';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (!hasVideo) {
+      alert('Digital invitation video will be available soon! Please check back later or contact the couple for details.');
+      return;
+    }
+    // Video download logic for local development only
+    alert('Video download is only available in local development environment.');
   };
 
   const handleVideoPlay = () => {
@@ -339,17 +339,29 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
 
                 {/* Video */}
                 <div className="mb-6">
-                  <video
-                    className="w-full rounded-xl sm:rounded-2xl shadow-lg"
-                    controls
-                    preload="metadata"
-                    onPlay={handleVideoPlay}
-                    onPause={handleVideoPause}
-                    onEnded={handleVideoEnd}
-                  >
-                    <source src={eInviteVideo} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
+                  {hasVideo ? (
+                    <video
+                      className="w-full rounded-xl sm:rounded-2xl shadow-lg"
+                      controls
+                      preload="metadata"
+                      onPlay={handleVideoPlay}
+                      onPause={handleVideoPause}
+                      onEnded={handleVideoEnd}
+                    >
+                      <source src="/assets/couple/Aayush Digital Invitation Card 01.mp4" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <div className="w-full rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-100 to-pink-100 p-8 text-center shadow-lg border-2 border-dashed border-purple-300">
+                      <div className="text-4xl mb-4">🎥</div>
+                      <h3 className="text-xl font-bold text-purple-800 mb-2">Digital Invitation Video</h3>
+                      <p className="text-gray-700 mb-4">Coming Soon!</p>
+                      <p className="text-sm text-gray-600">
+                        Our beautiful digital invitation video will be available shortly.<br/>
+                        In the meantime, enjoy exploring our wedding details below!
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Action Buttons */}
