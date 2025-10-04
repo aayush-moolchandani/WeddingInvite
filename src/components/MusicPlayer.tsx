@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Music, Volume2, VolumeX, Play, Pause } from 'lucide-react';
 
@@ -6,13 +6,12 @@ interface MusicPlayerProps {
   autoplay?: boolean;
 }
 
-const MusicPlayer = ({ autoplay = false }: MusicPlayerProps) => {
+const MusicPlayer = ({}: MusicPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
     // Auto-show the music player on first visit
