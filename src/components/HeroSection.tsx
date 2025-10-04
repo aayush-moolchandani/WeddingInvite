@@ -193,7 +193,7 @@ const HeroSection = React.memo(() => {
             className="mb-8 text-center"
           >
             <div className="text-lg md:text-xl text-amber-600 font-semibold mb-3 tracking-wide">
-              🌸 OM GANESHA GAYATRI 🌸
+              🌸 OM ganesha namah🌸
             </div>
             <div className="max-w-3xl mx-auto text-sm md:text-base text-gray-600 leading-relaxed">
               "Salutations to Lord Ganesha, the one with the curved trunk<br/>
