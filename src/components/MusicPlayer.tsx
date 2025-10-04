@@ -100,7 +100,24 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
     }
   };
 
+  // Handle iframe video interactions (for Google Drive embedded video)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Handle embedded Google Drive video events
+      if (event.data && typeof event.data === 'string') {
+        if (event.data.includes('play') || event.data.includes('playing')) {
+          // Pause background music when embedded video plays
+          if (audioRef.current && !isMuted && isPlaying) {
+            audioRef.current.pause();
+            setIsPlaying(false);
+          }
+        }
+      }
+    };
 
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isMuted, isPlaying]);
 
   return (
     <>
@@ -295,24 +312,41 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                   <div className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">📍 Delhi, India</div>
                 </div>
 
-                {/* Digital Invitation Video Link */}
-                <div className="text-center mb-6">
-                  <div className="bg-white/80 rounded-xl sm:rounded-2xl p-6 shadow-lg backdrop-blur-sm border border-white/30">
-                    <h3 className="font-bold text-lg sm:text-xl text-purple-800 mb-3 flex items-center justify-center">
+                {/* Digital Invitation Video */}
+                <div className="mb-6">
+                  <div className="bg-white/80 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg backdrop-blur-sm border border-white/30">
+                    <h3 className="font-bold text-lg sm:text-xl text-purple-800 mb-3 text-center flex items-center justify-center">
                       🎥 <span className="ml-2">Our Digital Invitation</span>
                     </h3>
-                    <p className="text-sm text-gray-700 mb-4">
+                    <p className="text-sm text-gray-700 mb-4 text-center">
                       Watch our beautiful digital invitation video
                     </p>
-                    <a 
-                      href="https://drive.google.com/file/d/1omBM_PDkiYR-gEzeTukqzf_Ninv066N8/view?usp=sharing"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                    >
-                      <Star className="mr-2" />
-                      Watch Video
-                    </a>
+                    
+                    {/* Embedded Google Drive Video */}
+                    <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg">
+                      <iframe
+                        src="https://drive.google.com/file/d/1omBM_PDkiYR-gEzeTukqzf_Ninv066N8/preview"
+                        title="Aayush & Tanya Wedding Invitation Video"
+                        className="absolute inset-0 w-full h-full"
+                        allowFullScreen
+                        loading="lazy"
+                      />
+                    </div>
+                    
+                    {/* Fallback message */}
+                    <div className="mt-3 text-center">
+                      <p className="text-xs text-gray-500">
+                        Having trouble viewing? 
+                        <a 
+                          href="https://drive.google.com/file/d/1omBM_PDkiYR-gEzeTukqzf_Ninv066N8/view?usp=sharing"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline ml-1"
+                        >
+                          Open in new tab
+                        </a>
+                      </p>
+                    </div>
                   </div>
                 </div>
 
