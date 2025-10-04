@@ -1,10 +1,11 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Menu, X, Home, Calendar, Camera, Sparkles } from 'lucide-react';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [showNavbar, setShowNavbar] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,8 +24,22 @@ const Navigation = () => {
       }
     };
 
+    const handleMouseMove = (e: MouseEvent) => {
+      // Show navbar when mouse is in top 100px of the page
+      if (e.clientY <= 100) {
+        setShowNavbar(true);
+      } else {
+        setShowNavbar(false);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
   const navItems = [
@@ -44,13 +59,16 @@ const Navigation = () => {
 
   return (
     <>
-      {/* Desktop Navigation */}
-      <motion.nav
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        className="fixed top-0 left-0 right-0 z-50 hidden lg:block bg-white/80 backdrop-blur-xl border-b border-gray-200/50"
-      >
+      {/* Desktop Navigation - Hover Activated */}
+      <AnimatePresence>
+        {showNavbar && (
+          <motion.nav
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="fixed top-0 left-0 right-0 z-50 hidden lg:block bg-white/90 backdrop-blur-xl border-b border-gray-200/50 shadow-lg"
+          >
         <div className="max-w-6xl mx-auto px-8">
           <div className="flex items-center justify-between py-6">
             <motion.div
@@ -82,7 +100,9 @@ const Navigation = () => {
             </div>
           </div>
         </div>
-      </motion.nav>
+          </motion.nav>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Navigation */}
       <motion.nav
