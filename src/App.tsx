@@ -87,7 +87,7 @@ function App() {
             <span>•</span>
             <p>With Love, Aayush & Tanya</p>
             <span>•</span>
-            <p className="text-orange-600 font-medium">#aayushgothistanipartner</p>
+            <p className="text-orange-600 font-medium">#aayushKitanipartner</p>
           </div>
         </div>
       </motion.footer>
