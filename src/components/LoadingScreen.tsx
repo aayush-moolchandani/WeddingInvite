@@ -15,6 +15,9 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
 
   useEffect(() => {
     const loadAssets = async () => {
+      // Detect mobile device for different loading strategy
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
       const steps = [
         { text: 'Preparing your invitation...', progress: 25 },
         { text: 'Loading beautiful memories...', progress: 50 },
@@ -29,24 +32,55 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         setProgress(steps[0].progress);
         await new Promise(resolve => setTimeout(resolve, 400));
 
-        // Step 2: Load music
+        // Step 2: Load music (with timeout for mobile)
         setLoadingText(steps[1].text);
         setProgress(steps[1].progress);
         
         const musicPromise = new Promise((resolve) => {
           const audio = new Audio();
-          audio.oncanplaythrough = () => resolve('music loaded');
-          audio.onerror = () => resolve('music failed');
-          audio.preload = 'auto';
+          audio.oncanplaythrough = () => {
+            console.log('🎵 Music fully loaded');
+            resolve('music loaded');
+          };
+          audio.oncanplay = () => {
+            console.log('🎵 Music can play (mobile fallback)');
+            resolve('music can play');
+          };
+          audio.onerror = (e) => {
+            console.log('🎵 Music loading error:', e);
+            resolve('music failed');
+          };
+          audio.onloadstart = () => console.log('🎵 Music loading started');
+          audio.onstalled = () => console.log('🎵 Music loading stalled');
+          
+          audio.preload = isMobile ? 'metadata' : 'auto';
           audio.src = weddingMusic;
+          
+          console.log('🎵 Starting music load, mobile:', isMobile);
         });
 
-        await musicPromise;
+        // Add timeout to prevent getting stuck
+        const timeoutPromise = new Promise((resolve) => {
+          setTimeout(() => {
+            console.log('⏰ Music loading timeout reached');
+            resolve('timeout');
+          }, isMobile ? 3000 : 5000);
+        });
 
-        // Step 3: Set up celebration
-        setLoadingText(steps[2].text);
-        setProgress(steps[2].progress);
-        await new Promise(resolve => setTimeout(resolve, 300));
+        const result = await Promise.race([musicPromise, timeoutPromise]);
+        console.log('🎵 Music loading result:', result);
+
+        // If timeout on mobile, skip to next step immediately
+        if (result === 'timeout' && isMobile) {
+          console.log('📱 Mobile timeout - skipping to next step');
+          setLoadingText(steps[2].text);
+          setProgress(steps[2].progress);
+        } else {
+          // Step 3: Set up celebration
+          setLoadingText(steps[2].text);
+          setProgress(steps[2].progress);
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
 
         // Step 4: Almost ready
         setLoadingText(steps[3].text);
