@@ -10,8 +10,9 @@ interface MusicPlayerProps {
 }
 
 const MusicPlayer = ({}: MusicPlayerProps) => {
-  const [isPlaying] = useState(true); // Auto-play by default
+  const [isPlaying, setIsPlaying] = useState(false); // Start as stopped
   const [isMuted, setIsMuted] = useState(false);
+  const [showPlayPrompt, setShowPlayPrompt] = useState(true); // Show play prompt initially
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -21,28 +22,6 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
     audioRef.current.volume = 0.4; // 40% volume
     audioRef.current.muted = isMuted;
     
-    // Auto-play music when user first interacts with page
-    const handleUserInteraction = () => {
-      if (isPlaying && audioRef.current) {
-        audioRef.current.play().catch(() => {
-          console.log('Auto-play blocked, user needs to interact');
-        });
-        document.removeEventListener('click', handleUserInteraction);
-        document.removeEventListener('touch', handleUserInteraction);
-      }
-    };
-    
-    document.addEventListener('click', handleUserInteraction);
-    document.addEventListener('touch', handleUserInteraction);
-    
-    // Start auto-play attempt after a short delay
-    setTimeout(() => {
-      if (audioRef.current) {
-        audioRef.current.play().catch(() => {
-          console.log('Auto-play blocked by browser');
-        });
-      }
-    }, 1000);
     
     // Cleanup on unmount
     return () => {
@@ -50,10 +29,19 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
         audioRef.current.pause();
         audioRef.current = null;
       }
-      document.removeEventListener('click', handleUserInteraction);
-      document.removeEventListener('touch', handleUserInteraction);
     };
   }, []);
+
+  const startMusic = () => {
+    if (audioRef.current) {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+        setShowPlayPrompt(false);
+      }).catch(() => {
+        console.log('Could not start music');
+      });
+    }
+  };
 
   const toggleMute = () => {
     if (audioRef.current) {
@@ -97,17 +85,45 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
         </div>
       )}
 
-      {/* Minimal Music Control */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={toggleMute}
-          className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          {isMuted ? <VolumeX size={18} className="text-gray-500" /> : <Volume2 size={18} className="text-purple-600" />}
-          <span className="text-xs text-gray-600 font-medium">Music {isMuted ? 'Off' : 'On'}</span>
-        </motion.button>
+      {/* Music Controls */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-3">
+        {/* Play Prompt */}
+        {showPlayPrompt && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="pointer-events-auto"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={startMusic}
+              className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <Volume2 size={18} />
+              <span className="text-sm font-medium">🎵 Play Music</span>
+            </motion.button>
+          </motion.div>
+        )}
+        
+        {/* Mute Control */}
+        {isPlaying && (
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="pointer-events-auto"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleMute}
+              className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              {isMuted ? <VolumeX size={18} className="text-gray-500" /> : <Volume2 size={18} className="text-purple-600" />}
+              <span className="text-xs text-gray-600 font-medium">Music {isMuted ? 'Off' : 'On'}</span>
+            </motion.button>
+          </motion.div>
+        )}
       </div>
     </>
   );
