@@ -2,13 +2,13 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { Camera, Heart, Download, Share2, X, ZoomIn, Trash2 } from 'lucide-react';
 
-// Import couple photos
-import couplePhoto1 from '../assets/couple/376FF52B-0169-4D92-9D9D-701B5AC3E7F8.JPG';
-import couplePhoto2 from '../assets/couple/IMG_2564.JPG'; // Using same photo as Photo3 since we only have 5 photos
-import couplePhoto3 from '../assets/couple/IMG_2454.JPG';
-import couplePhoto4 from '../assets/couple/IMG_2579.JPG';
-import couplePhoto5 from '../assets/couple/IMG_2581.JPG';
-import couplePhoto6 from '../assets/couple/IMG_2582.JPG';
+// Couple photos paths (using import.meta.url for Vite compatibility)
+const engagementPhoto = new URL('../assets/couple/376FF52B-0169-4D92-9D9D-701B5AC3E7F8.JPG', import.meta.url).href;
+const romanticPhoto1 = new URL('../assets/couple/IMG_2454.JPG', import.meta.url).href;
+const romanticPhoto2 = new URL('../assets/couple/IMG_2564.JPG', import.meta.url).href;
+const coupleMoment1 = new URL('../assets/couple/IMG_2579.JPG', import.meta.url).href;
+const coupleMoment2 = new URL('../assets/couple/IMG_2581.JPG', import.meta.url).href;
+const sweetMemory = new URL('../assets/couple/IMG_2582.JPG', import.meta.url).href;
 
 interface Photo {
   id: string;
@@ -59,42 +59,42 @@ const PhotoGallery = React.memo(() => {
   const samplePhotos: Photo[] = [
     {
       id: '1',
-      src: couplePhoto1,
+      src: engagementPhoto,
       alt: 'Aayush & Tanya Beautiful Moment',
       date: '2024-10-15',
       event: 'Engagement Session'
     },
     {
       id: '2',
-      src: couplePhoto2,
+      src: romanticPhoto1,
       alt: 'Aayush & Tanya Romantic Shot',
       date: '2024-10-20',
       event: 'Pre-wedding Photoshoot'
     },
     {
       id: '3',
-      src: couplePhoto3,
+      src: romanticPhoto2,
       alt: 'Aayush & Tanya Together',
       date: '2024-11-01',
       event: 'Special Moment'
     },
     {
       id: '4',
-      src: couplePhoto4,
+      src: coupleMoment1,
       alt: 'Aayush & Tanya Loving Look',
       date: '2024-10-25',
       event: 'Wedding Preparation'
     },
     {
       id: '5',
-      src: couplePhoto5,
+      src: coupleMoment2,
       alt: 'Aayush & Tanya Sweet Smile',
       date: '2024-10-30',
       event: 'Love Story'
     },
     {
       id: '6',
-      src: couplePhoto6,
+      src: sweetMemory,
       alt: 'Aayush & Tanya Together Forever',
       date: '2024-11-05',
       event: 'Memories'
