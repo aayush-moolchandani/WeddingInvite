@@ -4,7 +4,7 @@ import { Camera, Heart, Download, Share2, X, ZoomIn, Trash2 } from 'lucide-react
 
 // Couple photos paths (using import.meta.url for Vite compatibility)
 const engagementPhoto = new URL('../assets/couple/376FF52B-0169-4D92-9D9D-701B5AC3E7F8.JPG', import.meta.url).href;
-const romanticPhoto1 = new URL('../assets/couple/IMG_2454.JPG', import.meta.url).href;
+const romanticPhoto1 = new URL('../assets/couple/img23.JPG', import.meta.url).href;
 const romanticPhoto2 = new URL('../assets/couple/IMG_2564.JPG', import.meta.url).href;
 const coupleMoment1 = new URL('../assets/couple/IMG_2579.JPG', import.meta.url).href;
 const coupleMoment2 = new URL('../assets/couple/IMG_2581.JPG', import.meta.url).href;
