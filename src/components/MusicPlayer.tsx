@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Music, Volume2, VolumeX, Play, Pause } from 'lucide-react';
 
@@ -10,6 +10,8 @@ const MusicPlayer = ({ autoplay = false }: MusicPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
   useEffect(() => {
     // Auto-show the music player on first visit
@@ -22,16 +24,66 @@ const MusicPlayer = ({ autoplay = false }: MusicPlayerProps) => {
     }
   }, []);
 
+  // Create a beautiful synthetic wedding melody
+  const createWeddingMelody = () => {
+    try {
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      
+      const ctx = audioContextRef.current;
+      if (!ctx) return;
+      
+      // Wedding melody notes (romantic scale)
+      const melody = [262, 294, 330, 349, 392, 440, 494, 523]; // C4 to C5
+      const duration = 8; // seconds for full melody
+      
+      // Create melody
+      melody.forEach((frequency, index) => {
+        setTimeout(() => {
+          const oscillator = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          
+          oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+          oscillator.type = 'sine';
+          
+          // Volume envelope
+          gainNode.gain.setValueAtTime(0, ctx.currentTime);
+          gainNode.gain.linearRampToValueAtTime(0.1 * (isMuted ? 0 : 1), ctx.currentTime + 0.1);
+          gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
+          
+          oscillator.start(ctx.currentTime);
+          oscillator.stop(ctx.currentTime + 1);
+        }, index * 1000); // Play each note every second
+      });
+      
+    } catch (error) {
+      console.log('Audio synthesis not supported:', error);
+    }
+  };
+
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-    
-    // Simulate audio playback (replace with actual audio control)
-    const audioElement = document.getElementById('background-music') as HTMLAudioElement;
-    if (audioElement) {
-      if (!isPlaying) {
-        audioElement.play().catch(e => console.log('Audio play failed:', e));
-      } else {
-        audioElement.pause();
+    if (!isPlaying) {
+      setIsPlaying(true);
+      createWeddingMelody();
+      
+      // Repeat the melody every 10 seconds
+      const interval = setInterval(() => {
+        if (isPlaying) {
+          createWeddingMelody();
+        } else {
+          clearInterval(interval);
+        }
+      }, 10000);
+      
+    } else {
+      setIsPlaying(false);
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
       }
     }
   };
@@ -46,17 +98,7 @@ const MusicPlayer = ({ autoplay = false }: MusicPlayerProps) => {
 
   return (
     <>
-      {/* Background Music Track - Simulation Mode */}
-      {isPlaying && (
-        <div className="hidden">
-          {/* Due to copyright protection on JioSaavn, we're simulating the playback
-              You can replace this with your own audio file or use streaming links */}
-          <audio id="background-music" loop muted={isMuted}>
-            {/* Place your own audio file here - Wedding music .mp3/.wav etc. */}
-            <source src="/assets/wedding-music.mp3" type="audio/mpeg" />
-          </audio>
-        </div>
-      )}
+      {/* Web Audio API - No HTML audio element needed */}
 
       {/* Floating Music Notes Animation */}
       {isPlaying && (
