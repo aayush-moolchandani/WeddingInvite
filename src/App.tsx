@@ -4,6 +4,7 @@ import HeroSection from './components/HeroSection';
 import WeddingSchedule from './components/WeddingSchedule';
 import PhotoGallery from './components/PhotoGallery';
 import PhotoEditor from './components/PhotoEditor';
+import MusicPlayer from './components/MusicPlayer';
 
 function App() {
   return (
@@ -90,6 +91,9 @@ function App() {
           </div>
         </div>
       </motion.footer>
+      
+      {/* Music Player */}
+      <MusicPlayer />
     </div>
   );
 }
