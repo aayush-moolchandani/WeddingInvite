@@ -12,6 +12,7 @@ const MusicPlayer = ({ autoplay = false }: MusicPlayerProps) => {
   const [isVisible, setIsVisible] = useState(true);
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Auto-show the music player on first visit
@@ -22,65 +23,110 @@ const MusicPlayer = ({ autoplay = false }: MusicPlayerProps) => {
     } else {
       setIsVisible(false);
     }
+    
+    // Cleanup on unmount
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
   }, []);
 
   // Create a beautiful synthetic wedding melody
   const createWeddingMelody = () => {
     try {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      }
-      
       const ctx = audioContextRef.current;
-      if (!ctx) return;
+      if (!ctx || ctx.state === 'closed') {
+        console.log('Audio context not available');
+        return;
+      }
       
       // Wedding melody notes (romantic scale)
       const melody = [262, 294, 330, 349, 392, 440, 494, 523]; // C4 to C5
-      const duration = 8; // seconds for full melody
       
-      // Create melody
+      // Create melody with better timing
       melody.forEach((frequency, index) => {
         setTimeout(() => {
-          const oscillator = ctx.createOscillator();
-          const gainNode = ctx.createGain();
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(ctx.destination);
-          
-          oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
-          oscillator.type = 'sine';
-          
-          // Volume envelope
-          gainNode.gain.setValueAtTime(0, ctx.currentTime);
-          gainNode.gain.linearRampToValueAtTime(0.1 * (isMuted ? 0 : 1), ctx.currentTime + 0.1);
-          gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
-          
-          oscillator.start(ctx.currentTime);
-          oscillator.stop(ctx.currentTime + 1);
-        }, index * 1000); // Play each note every second
+          try {
+            const oscillator = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            
+            oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+            oscillator.type = 'sine';
+            
+            // Volume envelope with mute support
+            const volume = isMuted ? 0 : 0.15;
+            gainNode.gain.setValueAtTime(0, ctx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.2);
+            gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.2);
+            
+            oscillator.start(ctx.currentTime);
+            oscillator.stop(ctx.currentTime + 1.2);
+          } catch (e) {
+            console.log('Note creation failed:', e);
+          }
+        }, index * 600); // Play each note every 600ms for smoother melody
       });
       
     } catch (error) {
       console.log('Audio synthesis not supported:', error);
+      setIsPlaying(false);
     }
   };
 
   const togglePlay = () => {
+    console.log('🎵 Music player toggle:', !isPlaying ? 'Starting' : 'Stopping');
+    
     if (!isPlaying) {
       setIsPlaying(true);
-      createWeddingMelody();
       
-      // Repeat the melody every 10 seconds
-      const interval = setInterval(() => {
-        if (isPlaying) {
+      // Initialize audio context on first user interaction
+      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume().then(() => {
           createWeddingMelody();
-        } else {
-          clearInterval(interval);
+        });
+      } else if (!audioContextRef.current) {
+        try {
+          audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+          audioContextRef.current.resume().then(() => {
+            createWeddingMelody();
+          });
+        } catch (error) {
+          console.log('Audio not supported');
+          setIsPlaying(false);
+          alert('🎵 Music playback not supported in this browser. Click the JioSaavn link to listen to "Dekha Hazaro Dafaa" instead!');
+          return;
         }
-      }, 10000);
+      } else {
+        createWeddingMelody();
+      }
+      
+      // Clear any existing interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      
+      // Repeat the melody every 8 seconds
+      intervalRef.current = setInterval(() => {
+        createWeddingMelody();
+      }, 8000);
       
     } else {
       setIsPlaying(false);
+      
+      // Clear the interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      
+      // Close audio context
       if (audioContextRef.current) {
         audioContextRef.current.close();
         audioContextRef.current = null;
@@ -202,10 +248,10 @@ const MusicPlayer = ({ autoplay = false }: MusicPlayerProps) => {
                     transition={{ duration: 2, repeat: Infinity }}
                     className="text-xs text-green-600 font-medium"
                   >
-                    🔊 Playing • Romantic Vibes
+                    🔊 Playing • Romantic Wedding Melody
                   </motion.div>
                 ) : (
-                  <p className="text-xs text-gray-500 font-medium">⏸️ Paused</p>
+                  <p className="text-xs text-gray-500 font-medium">⏸️ Click to Play Wedding Music</p>
                 )}
               </div>
 

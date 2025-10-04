@@ -265,7 +265,6 @@ const HeroSection = React.memo(() => {
                 transition={{ delay: 1.2 }}
               >
                 <span className="relative">
-                  <span className="text-gradient bg-gradient-to-r from-rose-600 to-purple-600 bg-clip-text text-transparent">LOVE</span>
                   <motion.span
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
