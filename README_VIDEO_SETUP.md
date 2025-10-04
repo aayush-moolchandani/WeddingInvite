@@ -2,7 +2,13 @@
 
 ## eInvite Video Setup
 
-The eInvite video file `Aayush Digital Invitation Card 01.mp4` is excluded from this repository due to GitHub's 100MB file size limit.
+✅ **The eInvite video file `Aayush Digital Invitation Card 01.mp4` is now included in the website!**
+
+The video has been placed in both:
+- `public/assets/couple/` (for deployment)
+- `dist/assets/couple/` (build output)
+
+> **Note**: The video file (~129MB) is included in the build output and will be available on deployment platforms.
 
 ### To include the video in your deployment:
 

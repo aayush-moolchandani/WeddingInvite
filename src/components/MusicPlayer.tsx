@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX, Heart, Star, Download } from 'lucide-react';
+import { Volume2, VolumeX, Heart, Star } from 'lucide-react';
 
 // Import the music file
 import weddingMusic from '../assets/couple/music.mp3';
 
-// Check if we're in development mode (where video file exists)
-const hasVideo = !import.meta.env.PROD;
 
 interface MusicPlayerProps {
   autoplay?: boolean;
@@ -102,47 +100,7 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
     }
   };
 
-  const handleVideoDownload = () => {
-    if (!hasVideo) {
-      alert('Digital invitation video will be available soon! Please check back later or contact the couple for details.');
-      return;
-    }
-    // Video download logic for local development only
-    alert('Video download is only available in local development environment.');
-  };
 
-  const handleVideoPlay = () => {
-    console.log('Video started playing - pausing music');
-    if (audioRef.current && !isMuted && isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    }
-  };
-
-  const handleVideoPause = () => {
-    console.log('Video paused - resuming music');
-    if (audioRef.current && !isMuted) {
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-        console.log('Music resumed after video pause');
-      }).catch(() => {
-        console.log('Could not resume music');
-      });
-    }
-  };
-
-  const handleVideoEnd = () => {
-    console.log('Video ended - resuming music');
-    if (audioRef.current && !isMuted) {
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-        console.log('Music resumed after video end');
-      }).catch(() => {
-        console.log('Could not resume music');
-      });
-    }
-    // Do NOT automatically close popup - let user decide when to close
-  };
 
   return (
     <>
@@ -337,32 +295,27 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                   <div className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">📍 Delhi, India</div>
                 </div>
 
-                {/* Video */}
-                <div className="mb-6">
-                  {hasVideo ? (
-                    <video
-                      className="w-full rounded-xl sm:rounded-2xl shadow-lg"
-                      controls
-                      preload="metadata"
-                      onPlay={handleVideoPlay}
-                      onPause={handleVideoPause}
-                      onEnded={handleVideoEnd}
+                {/* Digital Invitation Video Link */}
+                <div className="text-center mb-6">
+                  <div className="bg-white/80 rounded-xl sm:rounded-2xl p-6 shadow-lg backdrop-blur-sm border border-white/30">
+                    <h3 className="font-bold text-lg sm:text-xl text-purple-800 mb-3 flex items-center justify-center">
+                      🎥 <span className="ml-2">Our Digital Invitation</span>
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-4">
+                      Watch our beautiful digital invitation video
+                    </p>
+                    <a 
+                      href="https://drive.google.com/file/d/1omBM_PDkiYR-gEzeTukqzf_Ninv066N8/view?usp=sharing"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                     >
-                      <source src="/assets/couple/Aayush Digital Invitation Card 01.mp4" type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  ) : (
-                    <div className="w-full rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-100 to-pink-100 p-8 text-center shadow-lg border-2 border-dashed border-purple-300">
-                      <div className="text-4xl mb-4">🎥</div>
-                      <h3 className="text-xl font-bold text-purple-800 mb-2">Digital Invitation Video</h3>
-                      <p className="text-gray-700 mb-4">Coming Soon!</p>
-                      <p className="text-sm text-gray-600">
-                        Our beautiful digital invitation video will be available shortly.<br/>
-                        In the meantime, enjoy exploring our wedding details below!
-                      </p>
-                    </div>
-                  )}
+                      <Star className="mr-2" />
+                      Watch Video
+                    </a>
+                  </div>
                 </div>
+
 
                 {/* Action Buttons */}
                 <div className="space-y-3 sm:space-y-4">
@@ -384,8 +337,8 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                     <Star className="ml-2" />
                   </button>
                   
-                  {/* Secondary Buttons */}
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  {/* Secondary Button */}
+                  <div className="text-center">
                     <button
                       onClick={() => {
                         closeInvitation();
@@ -396,18 +349,10 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                           }
                         }, 500);
                       }}
-                      className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-sm sm:text-base"
+                      className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-sm sm:text-base w-full sm:w-auto"
                     >
                       <Heart className="mr-2" />
-                      View Photos
-                    </button>
-
-                    <button
-                      onClick={handleVideoDownload}
-                      className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-sm sm:text-base"
-                    >
-                      <Download className="mr-2" />
-                      Save Invite
+                      View Wedding Photos
                     </button>
                   </div>
                 </div>
