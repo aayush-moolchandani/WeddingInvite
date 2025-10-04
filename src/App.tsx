@@ -73,14 +73,10 @@ function App() {
                 <p className="text-sm font-mono">8383812671</p>
               </div>
               <div>
-                <h5 className="font-medium text-gray-700">👨‍👩‍👧‍👦 Moolchandani Family</h5>
+                <h5 className="font-medium text-gray-700">👨‍👩‍👧‍👦 Moolchandani Family & Guwalani Family</h5>
                 <p className="text-sm">Mr. Ramesh Moolchandani & Mrs. Sakshi Moolchandani</p>
-                <p className="text-xs text-gray-500">(Parents of Aayush)</p>
-              </div>
-              <div>
-                <h5 className="font-medium text-gray-700">👨‍👩‍👧‍👦 Chadha Family</h5>
                 <p className="text-sm">Mr. Rajeev Chadha & Mrs. Jyoti Chadha</p>
-                <p className="text-xs text-gray-500">(Parents of Tanya)</p>
+                <p className="text-xs text-gray-500">(Parents of Aayush & Tanya)</p>
               </div>
             </div>
           </div>

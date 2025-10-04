@@ -128,8 +128,11 @@ const PhotoEditor = () => {
       const updatedPhotos = [...photosToKeep, newPhoto];
       localStorage.setItem('weddingUploadedPhotos', JSON.stringify(updatedPhotos));
       
+      // Emit event to notify PhotoGallery of new upload
+      window.dispatchEvent(new CustomEvent('photoUploaded'));
+      
       // Show success message
-      alert(`Photo saved to ${ selectedEvent} gallery! Refresh to see your photo.`);
+      alert(`Photo saved to ${ selectedEvent} gallery!`);
       
       // Reset
       setCapturedImage(null);

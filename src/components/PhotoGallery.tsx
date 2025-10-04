@@ -22,8 +22,8 @@ const PhotoGallery = React.memo(() => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [uploadedPhotos, setUploadedPhotos] = useState<Photo[]>([]);
 
-  // Load uploaded photos from localStorage on component mount
-  React.useEffect(() => {
+  // Function to load uploaded photos
+  const loadUploadedPhotos = () => {
     const saved = localStorage.getItem('weddingUploadedPhotos');
     if (saved) {
       try {
@@ -34,19 +34,28 @@ const PhotoGallery = React.memo(() => {
         console.error('Error loading saved photos:', error);
       }
     }
+  };
+
+  // Load uploaded photos from localStorage on component mount and when new photos are uploaded
+  React.useEffect(() => {
+    loadUploadedPhotos();
+    
+    // Listen for new photo uploads
+    const handlePhotoUpload = () => {
+      loadUploadedPhotos();
+    };
+    
+    window.addEventListener('photoUploaded', handlePhotoUpload);
+    
+    return () => window.removeEventListener('photoUploaded', handlePhotoUpload);
   }, []);
 
   // Clean up storage function
   const clearOldPhotos = () => {
     try {
-      const saved = localStorage.getItem('weddingUploadedPhotos');
-      if (saved) {
-        const allPhotos = JSON.parse(saved);
-        const recentPhotos = allPhotos.slice(-15); // Keep only 15 recent photos
-        localStorage.setItem('weddingUploadedPhotos', JSON.stringify(recentPhotos));
-        setUploadedPhotos(recentPhotos.slice(-10)); // Display only 10
-        alert('🧹 Storage cleaned! Old photos removed.');
-      }
+      localStorage.removeItem('weddingUploadedPhotos');
+      setUploadedPhotos([]);
+      alert('🧹 All uploaded photos cleared successfully!');
     } catch (error) {
       console.error('Cleanup error:', error);
       alert('❌ Cleanup failed. Please try again.');

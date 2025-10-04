@@ -28,8 +28,8 @@ const WeddingSchedule = React.memo(() => {
   const events: EventData[] = [
     {
       id: 'janehu',
-      title: 'Janehu',
-      time: 'Morning',
+      title: 'Janeu',
+      time: '11 AM',
       description: 'Traditional wedding rituals begin',
       venue: 'Green Lounge North',
       venueAddress: 'Green Lounge, Wazirpur, Delhi, India',
@@ -41,7 +41,7 @@ const WeddingSchedule = React.memo(() => {
     {
       id: 'haldi',
       title: 'Haldi Ceremony',
-      time: 'Evening',
+      time: '12 PM',
       description: 'Turmeric blessing ceremony',
       venue: 'Green Lounge North',
       venueAddress: 'Green Lounge, Wazirpur, Delhi, India',
@@ -53,9 +53,9 @@ const WeddingSchedule = React.memo(() => {
     {
       id: 'sagai',
       title: 'Sagai',
-      time: 'Evening',
+      time: '8 PM',
       description: 'Engagement celebration',
-      venue: 'The Grandeur by Lavunya',
+      venue: 'The Grandeur by Lavanya',
       venueAddress: 'The Grandeur by Lavanya, banquet hall, Delhi, India',
       venueImage: lavanyaImage,
       icon: <Bell />,
@@ -64,8 +64,8 @@ const WeddingSchedule = React.memo(() => {
     },
     {
       id: 'saat-shagun',
-      title: 'Saat Shagun',
-      time: 'Morning',
+      title: 'Saath',
+      time: '11 AM',
       description: 'Seven blessings ceremony',
       venue: 'Salt Stayz',
       venueAddress: 'Salt Stayz Hotel, Delhi, India',
@@ -76,8 +76,8 @@ const WeddingSchedule = React.memo(() => {
     },
     {
       id: 'shaadi',
-      title: 'Shaadi',
-      time: 'Evening',
+      title: 'Marriage',
+      time: '8 PM',
       description: 'Main wedding ceremony',
       venue: 'The Grandreams Nouveau Palaces',
       venueAddress: 'The Grandreams Nouveau Palaces, Mayapuri Industrial Area, Delhi',
