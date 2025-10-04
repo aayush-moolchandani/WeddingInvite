@@ -400,6 +400,7 @@ const EventAnimations = ({ eventType, isVisible }: AnimationProps) => {
         return null;
     }
   };
+  
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
