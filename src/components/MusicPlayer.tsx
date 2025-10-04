@@ -13,6 +13,28 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false); // Start as stopped
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+  // Force music to start on ANY click/touch anywhere on page
+  useEffect(() => {
+    const globalClick = async () => {
+      if (audioRef.current && !isPlaying) {
+        try {
+          await audioRef.current.play();
+          setIsPlaying(true);
+          document.removeEventListener('click', globalClick);
+          document.removeEventListener('touchstart', globalClick);
+        } catch (e) {}
+      }
+    };
+
+    document.addEventListener('click', globalClick, { once: true });
+    document.addEventListener('touchstart', globalClick, { once: true });
+
+    return () => {
+      document.removeEventListener('click', globalClick);
+      document.removeEventListener('touchstart', globalClick);
+    };
+  }, [isPlaying]);
 
   useEffect(() => {
     // Initialize audio element
@@ -22,63 +44,63 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
     audioRef.current.muted = isMuted;
     audioRef.current.preload = "auto";
     
-    // Multiple auto-play attempts
-    const attemptAutoPlay = async () => {
-      if (audioRef.current) {
+
+    // Multiple timing-based attempts
+    const attemptTimes = [100, 500, 1000, 2000, 3000, 5000]; // Try every interval
+    
+    attemptTimes.forEach((delay) => {
+      setTimeout(async () => {
+        if (audioRef.current && !isPlaying) {
+          try {
+            await audioRef.current.play();
+            setIsPlaying(true);
+          } catch (e) {
+            console.log(`Auto-play attempt ${delay}ms failed`);
+          }
+        }
+      }, delay);
+    });
+
+    // Event-based fallbacks
+    const events = ['load', 'click', 'touchstart', 'scroll', 'mousemove', 'keydown'];
+    
+    const handleEvent = async (event: Event) => {
+      if (audioRef.current && !isPlaying) {
         try {
           await audioRef.current.play();
           setIsPlaying(true);
-        } catch (error) {
-          console.log('Auto-play blocked by browser');
           
-          // Try again after user scrolls
-          const handleScroll = async () => {
-            if (audioRef.current && !isPlaying) {
-              try {
-                await audioRef.current.play();
-                setIsPlaying(true);
-                window.removeEventListener('scroll', handleScroll);
-                window.removeEventListener('mousemove', handleMouseMove);
-              } catch (e) {
-                console.log('Still blocked');
-              }
-            }
-          };
-          
-          const handleMouseMove = async () => {
-            if (audioRef.current && !isPlaying) {
-              try {
-                await audioRef.current.play();
-                setIsPlaying(true);
-                window.removeEventListener('scroll', handleScroll);
-                window.removeEventListener('mousemove', handleMouseMove);
-              } catch (e) {
-                console.log('Still blocked');
-              }
-            }
-          };
-          
-          // Try on first scroll or mouse movement
-          window.addEventListener('scroll', handleScroll, { once: true });
-          window.addEventListener('mousemove', handleMouseMove, { once: true });
-          
-          // Final attempt after 2 seconds
-          setTimeout(async () => {
-            if (audioRef.current && !isPlaying) {
-              try {
-                await audioRef.current.play();
-                setIsPlaying(true);
-              } catch (e) {
-                console.log('All auto-play attempts failed');
-              }
-            }
-          }, 2000);
+          // Remove all event listeners once music starts
+          events.forEach(eventName => {
+            window.removeEventListener(eventName, handleEvent);
+            document.removeEventListener(eventName, handleEvent);
+          });
+        } catch (e) {
+          console.log(`${event.type} trigger failed`);
         }
       }
     };
+
+    // Add all event listeners
+    events.forEach(eventName => {
+      window.addEventListener(eventName, handleEvent, { passive: true, once: true });
+      document.addEventListener(eventName, handleEvent, { passive: true, once: true });
+    });
+
+    // Try focusing window (some browsers allow auto-play for focused windows)
+    const focusPlay = async () => {
+      if (audioRef.current && !isPlaying) {
+        try {
+          window.focus();
+          await audioRef.current.play();
+          setIsPlaying(true);
+        } catch (e) {}
+      }
+    };
     
-    // Start auto-play after component mounts
-    setTimeout(attemptAutoPlay, 500);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', focusPlay, { once: true });
+    }
     
     // Cleanup on unmount
     return () => {
@@ -86,8 +108,10 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
         audioRef.current.pause();
         audioRef.current = null;
       }
-      window.removeEventListener('scroll', attemptAutoPlay);
-      window.removeEventListener('mousemove', attemptAutoPlay);
+      events.forEach(eventName => {
+        window.removeEventListener(eventName, handleEvent);
+        document.removeEventListener(eventName, handleEvent);
+      });
     };
   }, []);
 
