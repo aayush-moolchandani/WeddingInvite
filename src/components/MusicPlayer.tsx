@@ -371,8 +371,8 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                     <Star className="ml-2" />
                   </button>
                   
-                  {/* Secondary Button */}
-                  <div className="text-center">
+                  {/* Secondary Buttons */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <button
                       onClick={() => {
                         closeInvitation();
@@ -383,10 +383,27 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                           }
                         }, 500);
                       }}
-                      className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-sm sm:text-base w-full sm:w-auto"
+                      className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-sm sm:text-base"
                     >
                       <Heart className="mr-2" />
-                      View Wedding Photos
+                      View Photos
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        // Scroll to photo editor for uploading photos
+                        closeInvitation();
+                        setTimeout(() => {
+                          const photoEditorSection = document.querySelector('#photo-editor');
+                          if (photoEditorSection) {
+                            photoEditorSection.scrollIntoView({ behavior: 'smooth' });
+                          }
+                        }, 500);
+                      }}
+                      className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-sm sm:text-base"
+                    >
+                      <Star className="mr-2" />
+                      Upload Photos
                     </button>
                   </div>
                 </div>
