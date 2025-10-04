@@ -2,13 +2,12 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { Camera, Heart, Download, Share2, X, ZoomIn, Trash2 } from 'lucide-react';
 
-// Placeholder images for couple photos (replace with actual photos)
-const couplePhoto1 = 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&h=600&fit=crop';
-const couplePhoto2 = 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=600&fit=crop';
-const couplePhoto3 = 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=600&fit=crop';
-const couplePhoto4 = 'https://images.unsplash.com/photo-1583937423142-5ea6cbf21fa8?w=400&h=600&fit=crop';
-const couplePhoto5 = 'https://images.unsplash.com/photo-1518568814500-bf0f8d112f46?w=400&h=600&fit=crop';
-const couplePhoto6 = 'https://images.unsplash.com/photo-1606800052052-a09af5fcb924?w=400&h=600&fit=crop';
+// Import couple photos
+import couplePhoto1 from '../assets/couple/376FF52B-0169-4D92-9D9D-701B5AC3E7F8.JPG';
+import couplePhoto3 from '../assets/couple/IMG_2454.JPG';
+import couplePhoto4 from '../assets/couple/IMG_2579.JPG';
+import couplePhoto5 from '../assets/couple/IMG_2581.JPG';
+import couplePhoto6 from '../assets/couple/IMG_2582.JPG';
 
 interface Photo {
   id: string;
