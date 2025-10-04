@@ -16,7 +16,7 @@ export default defineConfig({
       },
     },
     // Reduce bundle size
-    minify: 'terser',
+    minify: 'esbuild',
     // Enable compression
     sourcemap: false,
     // Optimize assets

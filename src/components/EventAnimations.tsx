@@ -7,7 +7,7 @@ interface AnimationProps {
 
 const EventAnimations = ({ eventType, isVisible }: AnimationProps) => {
   // Flower Shower for Pre-wedding
-  const FlowerShower = () => (
+  const renderFlowerShower = () => (
     <AnimatePresence>
       {isVisible && (
         <>
@@ -384,6 +384,8 @@ const EventAnimations = ({ eventType, isVisible }: AnimationProps) => {
 
   const renderAnimation = () => {
     switch (eventType) {
+      case 'pre-wedding':
+        return renderFlowerShower();
       case 'haldi':
         return renderHaldiHeartShower();
       case 'sagai':
