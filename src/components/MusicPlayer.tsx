@@ -15,34 +15,67 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
   const [isMuted, setIsMuted] = useState(false);
   const [showEnvelope, setShowEnvelope] = useState(true);
   const [invitationOpened, setInvitationOpened] = useState(false);
+  const [musicLoaded, setMusicLoaded] = useState(false);
+  const [musicLoading, setMusicLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Initialize audio element
+    // Initialize audio element and load music in background
     if (!audioRef.current) {
+      console.log('🎵 Initializing music player and loading audio in background...');
+      setMusicLoading(true);
+      
       audioRef.current = new Audio();
       audioRef.current.src = weddingMusic;
       audioRef.current.loop = true;
       audioRef.current.volume = 0.3;
-      audioRef.current.preload = 'metadata';
+      audioRef.current.preload = 'auto'; // Load entire file in background
       audioRef.current.muted = false;
       
       // Event listeners
       const handlePlay = () => {
         setIsPlaying(true);
+        console.log('🎵 Music started playing');
       };
 
       const handlePause = () => {
         setIsPlaying(false);
+        console.log('🎵 Music paused');
+      };
+
+      const handleCanPlayThrough = () => {
+        setMusicLoaded(true);
+        setMusicLoading(false);
+        console.log('🎵 Music fully loaded and ready to play!');
+      };
+
+      const handleLoadStart = () => {
+        console.log('🎵 Music loading started...');
+      };
+
+      const handleError = (e: Event) => {
+        console.error('🎵 Music loading error:', e);
+        setMusicLoading(false);
       };
 
       audioRef.current.addEventListener('play', handlePlay);
       audioRef.current.addEventListener('pause', handlePause);
+      audioRef.current.addEventListener('canplaythrough', handleCanPlayThrough);
+      audioRef.current.addEventListener('loadstart', handleLoadStart);
+      audioRef.current.addEventListener('error', handleError);
+
+      // Start loading the music immediately
+      audioRef.current.load();
     }
 
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current.removeEventListener('play', () => {});
+        audioRef.current.removeEventListener('pause', () => {});
+        audioRef.current.removeEventListener('canplaythrough', () => {});
+        audioRef.current.removeEventListener('loadstart', () => {});
+        audioRef.current.removeEventListener('error', () => {});
       }
     };
   }, []);
@@ -50,25 +83,48 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
   const openInvitation = async () => {
     console.log('Opening invitation, starting music');
     setShowEnvelope(false);
-    setInvitationOpened(true);
     
-    // Start music immediately on user interaction
+    // Prevent body scroll on mobile when modal opens
+    document.body.style.overflow = 'hidden';
+    
+    // Small delay to ensure envelope animation completes before showing popup
+    setTimeout(() => {
+      setInvitationOpened(true);
+    }, 100);
+    
+    // Start music immediately if loaded, otherwise wait for it
     if (audioRef.current) {
-      try {
-        audioRef.current.play().then(() => {
+      if (musicLoaded) {
+        try {
+          await audioRef.current.play();
           setIsPlaying(true);
-          console.log('Music started successfully on invitation open!');
-        }).catch((error) => {
-          console.log('Music play failed:', error);
-        });
-      } catch (error) {
-        console.log('Music initialization error:', error);
+          console.log('🎵 Music started immediately (already loaded)!');
+        } catch (error) {
+          console.log('🎵 Music play failed:', error);
+        }
+      } else {
+        console.log('🎵 Music still loading, will start when ready...');
+        // Music will start automatically when canplaythrough event fires
+        // We'll set a flag to auto-play when music is ready
+        audioRef.current.addEventListener('canplaythrough', () => {
+          if (invitationOpened) {
+            audioRef.current?.play().then(() => {
+              setIsPlaying(true);
+              console.log('🎵 Music started after loading completed!');
+            }).catch(() => {
+              console.log('🎵 Could not start music after loading');
+            });
+          }
+        }, { once: true });
       }
     }
   };
 
   const closeInvitation = () => {
     setInvitationOpened(false);
+    
+    // Restore body scroll when modal closes
+    document.body.style.overflow = 'unset';
     
     // Resume music when popup is manually closed (if not muted)
     if (audioRef.current && !isMuted && !isPlaying) {
@@ -198,7 +254,18 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                       
                       {/* Call to Action */}
                       <div className="bg-white/50 rounded-lg px-4 py-2 mt-2">
-                        <div className="font-semibold text-xs sm:text-sm text-purple-800">Tap to celebrate!</div>
+                        <div className="font-semibold text-xs sm:text-sm text-purple-800">
+                          {musicLoading ? (
+                            <div className="flex items-center justify-center">
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-purple-600 mr-2"></div>
+                              Loading music...
+                            </div>
+                          ) : musicLoaded ? (
+                            "Tap to celebrate! 🎵"
+                          ) : (
+                            "Tap to celebrate!"
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -226,18 +293,34 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
       {/* Invitation Modal - Mobile First */}
       <AnimatePresence>
         {invitationOpened && (
-          <div className="fixed inset-0 z-[9999] bg-gradient-to-br from-black/60 via-purple-900/40 to-black/60 backdrop-blur-xl">
-            <div className="flex items-center justify-center min-h-screen p-4">
+          <div 
+            className="fixed inset-0 z-[99999] bg-gradient-to-br from-black/60 via-purple-900/40 to-black/60 backdrop-blur-xl"
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 99999,
+              WebkitOverflowScrolling: 'touch'
+            }}
+            onClick={closeInvitation}
+          >
+            <div className="flex items-center justify-center min-h-screen p-4" style={{ minHeight: '100vh' }}>
               <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.3 }}
-                className="w-full max-w-md sm:max-w-2xl bg-gradient-to-br from-yellow-50 via-pink-50 to-purple-50 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-2xl relative border-4 border-white/60 overflow-y-auto max-h-[90vh]"
+                initial={{ opacity: 0, scale: 0.5, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.5, y: 20 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="w-full max-w-md sm:max-w-2xl bg-gradient-to-br from-yellow-50 via-pink-50 to-purple-50 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-2xl relative border-4 border-white/60 overflow-y-auto max-h-[90vh] sm:max-h-[85vh]"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                   background: 'linear-gradient(135deg, #fef9e7 0%, #fed7aa 15%, #fecaca 35%, #fed7d7 55%, #e9d5ff 75%, #ddd6fe 100%)',
-                  border: '4px solid rgba(255, 255, 255, 0.8)'
+                  border: '4px solid rgba(255, 255, 255, 0.8)',
+                  position: 'relative',
+                  zIndex: 100000,
+                  transform: 'translateZ(0)', // Force hardware acceleration
+                  WebkitTransform: 'translateZ(0)'
                 }}
               >
                 {/* Close Button */}
