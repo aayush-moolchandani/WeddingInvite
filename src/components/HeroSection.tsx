@@ -255,7 +255,7 @@ const HeroSection = React.memo(() => {
                     
                     {/* Hashtag */}
                     <div className="text-xs text-amber-700 font-medium mt-2 px-4 py-1 bg-gradient-to-r from-amber-100 to-orange-100 rounded-full inline-block border border-amber-200">
-                      #aayushgothistanipartner
+                      #aayushKitanipartner
                     </div>
               
               <motion.h3 
