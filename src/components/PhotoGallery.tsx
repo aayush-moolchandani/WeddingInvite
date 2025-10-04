@@ -4,7 +4,7 @@ import { Camera, Heart, Download, Share2, X, ZoomIn, Trash2 } from 'lucide-react
 
 // Import couple photos
 import couplePhoto1 from '../assets/couple/376FF52B-0169-4D92-9D9D-701B5AC3E7F8.JPG';
-import couplePhoto2 from '../assets/couple/IMG_2454.JPG'; // Using same photo as Photo3 since we only have 5 photos
+import couplePhoto2 from '../assets/couple/IMG_2564.JPG'; // Using same photo as Photo3 since we only have 5 photos
 import couplePhoto3 from '../assets/couple/IMG_2454.JPG';
 import couplePhoto4 from '../assets/couple/IMG_2579.JPG';
 import couplePhoto5 from '../assets/couple/IMG_2581.JPG';
