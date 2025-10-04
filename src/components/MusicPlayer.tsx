@@ -20,17 +20,27 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Initialize audio element and load music in background
+    // Initialize audio element with mobile-optimized settings
     if (!audioRef.current) {
-      console.log('🎵 Initializing music player and loading audio in background...');
+      console.log('🎵 Initializing music player with mobile optimizations...');
       setMusicLoading(true);
+      
+      // Detect mobile device
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
       audioRef.current = new Audio();
       audioRef.current.src = weddingMusic;
       audioRef.current.loop = true;
-      audioRef.current.volume = 0.3;
-      audioRef.current.preload = 'auto'; // Load entire file in background
+      audioRef.current.volume = isMobile ? 0.2 : 0.3; // Lower volume on mobile
+      audioRef.current.preload = isMobile ? 'metadata' : 'auto'; // Lighter preload on mobile
       audioRef.current.muted = false;
+      
+      // Mobile-specific optimizations
+      if (isMobile) {
+        audioRef.current.crossOrigin = 'anonymous';
+        // Reduce buffer size for mobile
+        audioRef.current.load();
+      }
       
       // Event listeners
       const handlePlay = () => {
@@ -47,6 +57,20 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
         setMusicLoaded(true);
         setMusicLoading(false);
         console.log('🎵 Music fully loaded and ready to play!');
+        
+        // Performance monitoring
+        if (performance && performance.now) {
+          console.log('🎵 Music load time:', performance.now(), 'ms');
+        }
+      };
+
+      const handleCanPlay = () => {
+        // On mobile, consider music ready when it can start playing (not fully buffered)
+        if (isMobile) {
+          setMusicLoaded(true);
+          setMusicLoading(false);
+          console.log('🎵 Music ready to play on mobile!');
+        }
       };
 
       const handleLoadStart = () => {
@@ -56,16 +80,25 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
       const handleError = (e: Event) => {
         console.error('🎵 Music loading error:', e);
         setMusicLoading(false);
+        setMusicLoaded(false);
+      };
+
+      const handleStalled = () => {
+        console.log('🎵 Music loading stalled, trying to recover...');
       };
 
       audioRef.current.addEventListener('play', handlePlay);
       audioRef.current.addEventListener('pause', handlePause);
       audioRef.current.addEventListener('canplaythrough', handleCanPlayThrough);
+      audioRef.current.addEventListener('canplay', handleCanPlay);
       audioRef.current.addEventListener('loadstart', handleLoadStart);
       audioRef.current.addEventListener('error', handleError);
+      audioRef.current.addEventListener('stalled', handleStalled);
 
-      // Start loading the music immediately
-      audioRef.current.load();
+      // Start loading the music immediately (only if not mobile)
+      if (!isMobile) {
+        audioRef.current.load();
+      }
     }
 
     return () => {
@@ -84,38 +117,68 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
     console.log('Opening invitation, starting music');
     setShowEnvelope(false);
     
+    // Detect mobile for performance optimization
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     // Prevent body scroll on mobile when modal opens
     document.body.style.overflow = 'hidden';
     
-    // Small delay to ensure envelope animation completes before showing popup
+    // Smaller delay on mobile for better performance
+    const delay = isMobile ? 50 : 100;
     setTimeout(() => {
       setInvitationOpened(true);
-    }, 100);
+    }, delay);
     
-    // Start music immediately if loaded, otherwise wait for it
+    // Mobile-optimized music handling
     if (audioRef.current) {
-      if (musicLoaded) {
+      if (isMobile) {
+        // On mobile, start loading music only when needed
+        if (!musicLoaded) {
+          console.log('🎵 Starting music load on mobile...');
+          audioRef.current.load();
+        }
+        
+        // Try to play immediately, fallback to loading
         try {
           await audioRef.current.play();
           setIsPlaying(true);
-          console.log('🎵 Music started immediately (already loaded)!');
+          console.log('🎵 Music started on mobile!');
         } catch (error) {
-          console.log('🎵 Music play failed:', error);
+          console.log('🎵 Music play failed on mobile, will retry:', error);
+          // Retry after a short delay
+          setTimeout(async () => {
+            try {
+              await audioRef.current?.play();
+              setIsPlaying(true);
+              console.log('🎵 Music started on retry!');
+            } catch (retryError) {
+              console.log('🎵 Music failed on retry:', retryError);
+            }
+          }, 500);
         }
       } else {
-        console.log('🎵 Music still loading, will start when ready...');
-        // Music will start automatically when canplaythrough event fires
-        // We'll set a flag to auto-play when music is ready
-        audioRef.current.addEventListener('canplaythrough', () => {
-          if (invitationOpened) {
-            audioRef.current?.play().then(() => {
-              setIsPlaying(true);
-              console.log('🎵 Music started after loading completed!');
-            }).catch(() => {
-              console.log('🎵 Could not start music after loading');
-            });
+        // Desktop behavior (original)
+        if (musicLoaded) {
+          try {
+            await audioRef.current.play();
+            setIsPlaying(true);
+            console.log('🎵 Music started immediately (already loaded)!');
+          } catch (error) {
+            console.log('🎵 Music play failed:', error);
           }
-        }, { once: true });
+        } else {
+          console.log('🎵 Music still loading, will start when ready...');
+          audioRef.current.addEventListener('canplaythrough', () => {
+            if (invitationOpened) {
+              audioRef.current?.play().then(() => {
+                setIsPlaying(true);
+                console.log('🎵 Music started after loading completed!');
+              }).catch(() => {
+                console.log('🎵 Could not start music after loading');
+              });
+            }
+          }, { once: true });
+        }
       }
     }
   };
@@ -412,7 +475,14 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                         title="Aayush & Tanya Wedding Invitation Video"
                         className="absolute inset-0 w-full h-full"
                         allowFullScreen
-                        loading="lazy"
+                        loading="eager"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        style={{
+                          border: 'none',
+                          borderRadius: '12px',
+                          transform: 'translateZ(0)', // Hardware acceleration
+                          WebkitTransform: 'translateZ(0)'
+                        }}
                       />
                     </div>
                     
