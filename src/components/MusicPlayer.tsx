@@ -24,7 +24,7 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
       audioRef.current.src = weddingMusic;
       audioRef.current.loop = true;
       audioRef.current.volume = 0.3;
-      audioRef.current.preload = 'auto';
+      audioRef.current.preload = 'metadata';
       audioRef.current.muted = false;
       
       // Event listeners

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Camera, Heart, Download, Share2, X, ZoomIn, Trash2 } from 'lucide-react';
 
 // Couple photos paths (using import.meta.url for Vite compatibility)
@@ -18,9 +18,11 @@ interface Photo {
   event: string;
 }
 
+
 const PhotoGallery = React.memo(() => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [uploadedPhotos, setUploadedPhotos] = useState<Photo[]>([]);
+  const galleryRef = useRef<HTMLDivElement>(null);
 
   // Function to load uploaded photos
   const loadUploadedPhotos = () => {
@@ -166,6 +168,7 @@ const PhotoGallery = React.memo(() => {
         </motion.div>
 
         <motion.div
+          ref={galleryRef}
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

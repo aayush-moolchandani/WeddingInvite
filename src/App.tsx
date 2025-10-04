@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion';
+import { lazy, Suspense } from 'react';
 import Navigation from './components/Navigation';
 import HeroSection from './components/HeroSection';
 import WeddingSchedule from './components/WeddingSchedule';
 import PhotoGallery from './components/PhotoGallery';
-import PhotoEditor from './components/PhotoEditor';
 import MusicPlayer from './components/MusicPlayer';
 import { Analytics } from '@vercel/analytics/react';
+
+// Lazy load heavy components
+const PhotoEditor = lazy(() => import('./components/PhotoEditor'));
 
 function App() {
   return (
@@ -30,7 +33,16 @@ function App() {
 
       {/* Photo Editor */}
       <section id="photo-editor">
-        <PhotoEditor />
+        <Suspense fallback={
+          <div className="py-20 px-4 bg-gradient-to-br from-purple-50 to-pink-50">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading Photo Editor...</p>
+            </div>
+          </div>
+        }>
+          <PhotoEditor />
+        </Suspense>
       </section>
 
       {/* Footer */}
