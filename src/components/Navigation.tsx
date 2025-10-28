@@ -2,7 +2,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Menu, X, Home, Calendar, Camera, Sparkles } from 'lucide-react';
 
-const Navigation = () => {
+interface NavigationProps {
+  showOnlyMarriage?: boolean;
+}
+
+const Navigation = ({ showOnlyMarriage = false }: NavigationProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [showNavbar, setShowNavbar] = useState(false);

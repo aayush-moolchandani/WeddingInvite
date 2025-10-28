@@ -3,7 +3,11 @@ import React from 'react';
 import { Heart, Sparkles } from 'lucide-react';
 import TALogo from '../assets/TAlogo.jpeg';
 
-const HeroSection = React.memo(() => {
+interface HeroSectionProps {
+  showOnlyMarriage?: boolean;
+}
+
+const HeroSection = React.memo(({ showOnlyMarriage = false }: HeroSectionProps) => {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden pb-16 lg:pb-24">
       {/* Dreamy Animated Background */}
@@ -209,7 +213,7 @@ const HeroSection = React.memo(() => {
                     className="text-4xl md:text-6xl font-medium mb-4"
                   >
                     <span className="bg-gradient-to-r from-amber-700 via-orange-600 to-rose-600 bg-clip-text text-transparent">
-                      November 7 & 8, 2025
+                      {showOnlyMarriage ? 'November 8, 2025' : 'November 7 & 8, 2025'}
                     </span>
                   </motion.h2>
 
@@ -219,7 +223,10 @@ const HeroSection = React.memo(() => {
             transition={{ duration: 0.8, delay: 1.0 }}
             className="text-xl md:text-2xl text-gray-700 mt-6 font-light tracking-wide"
           >
-            We cordially request your esteemed presence
+            {showOnlyMarriage 
+              ? 'Join us for our wedding ceremony'
+              : 'We cordially request your esteemed presence'
+            }
           </motion.p>
         </motion.div>
 

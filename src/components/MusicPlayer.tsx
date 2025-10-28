@@ -7,10 +7,10 @@ import weddingMusic from '../assets/couple/music.mp3';
 
 
 interface MusicPlayerProps {
-  autoplay?: boolean;
+  showOnlyMarriage?: boolean;
 }
 
-const MusicPlayer = ({}: MusicPlayerProps) => {
+const MusicPlayer = ({ showOnlyMarriage = false }: MusicPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [showEnvelope, setShowEnvelope] = useState(true);
@@ -417,28 +417,32 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                 <div className="bg-white/90 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 shadow-lg">
                   <h3 className="font-bold text-lg sm:text-xl text-purple-800 mb-4 sm:mb-5 text-center flex items-center justify-center">
                     <Star className="mr-2 text-yellow-500" />
-                    Our Wedding Celebrations
+                    {showOnlyMarriage ? 'Our Wedding Ceremony' : 'Our Wedding Celebrations'}
                     <Star className="ml-2 text-yellow-500" />
                   </h3>
                   <div className="space-y-3 sm:space-y-4 text-sm sm:text-base">
-                    <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg sm:rounded-xl border border-yellow-200">
-                      <span className="flex items-center">
-                        🌸 <span className="ml-2 sm:ml-3 font-semibold">Haldi & Janeu</span>
-                      </span>
-                      <span className="font-bold text-yellow-700 bg-white/70 px-2 py-1 sm:px-3 rounded-lg text-xs sm:text-sm">Nov 7th, 11-12 PM</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-pink-50 to-rose-50 rounded-lg sm:rounded-xl border border-pink-200">
-                      <span className="flex items-center">
-                        💍 <span className="ml-2 sm:ml-3 font-semibold">Engagement Ceremony</span>
-                      </span>
-                      <span className="font-bold text-pink-700 bg-white/70 px-2 py-1 sm:px-3 rounded-lg text-xs sm:text-sm">Nov 7th, 8 PM</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg sm:rounded-xl border border-purple-200">
-                      <span className="flex items-center">
-                        🙏 <span className="ml-2 sm:ml-3 font-semibold">Blessing Ceremony</span>
-                      </span>
-                      <span className="font-bold text-purple-700 bg-white/70 px-2 py-1 sm:px-3 rounded-lg text-xs sm:text-sm">Nov 8th, 11 AM</span>
-                    </div>
+                    {!showOnlyMarriage && (
+                      <>
+                        <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg sm:rounded-xl border border-yellow-200">
+                          <span className="flex items-center">
+                            🌸 <span className="ml-2 sm:ml-3 font-semibold">Haldi & Janeu</span>
+                          </span>
+                          <span className="font-bold text-yellow-700 bg-white/70 px-2 py-1 sm:px-3 rounded-lg text-xs sm:text-sm">Nov 7th, 11-12 PM</span>
+                        </div>
+                        <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-pink-50 to-rose-50 rounded-lg sm:rounded-xl border border-pink-200">
+                          <span className="flex items-center">
+                            💍 <span className="ml-2 sm:ml-3 font-semibold">Engagement Ceremony</span>
+                          </span>
+                          <span className="font-bold text-pink-700 bg-white/70 px-2 py-1 sm:px-3 rounded-lg text-xs sm:text-sm">Nov 7th, 8 PM</span>
+                        </div>
+                        <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg sm:rounded-xl border border-purple-200">
+                          <span className="flex items-center">
+                            🙏 <span className="ml-2 sm:ml-3 font-semibold">Sehrabandi</span>
+                          </span>
+                          <span className="font-bold text-purple-700 bg-white/70 px-2 py-1 sm:px-3 rounded-lg text-xs sm:text-sm">Nov 8th, 6:30 PM</span>
+                        </div>
+                      </>
+                    )}
                     <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg sm:rounded-xl border border-red-200">
                       <span className="flex items-center">
                         💒 <span className="ml-2 sm:ml-3 font-semibold">Wedding Ceremony</span>
@@ -451,55 +455,11 @@ const MusicPlayer = ({}: MusicPlayerProps) => {
                 {/* Venue */}
                 <div className="text-center mb-6">
                   <div className="text-sm sm:text-base text-gray-700 font-semibold bg-white/70 rounded-lg px-3 py-2 sm:px-4 sm:py-3 backdrop-blur-sm">
-                    🏰 The Grandeur by Lavanya & The Grand Dreams Mayapuri
+                    🏰 {showOnlyMarriage ? 'The Grand Dreams Mayapuri' : 'The Grandeur by Lavanya & The Grand Dreams Mayapuri'}
                   </div>
                   <div className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">📍 Delhi, India</div>
                 </div>
 
-                {/* Digital Invitation Video */}
-                <div className="mb-6">
-                  <div className="bg-white/80 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg backdrop-blur-sm border border-white/30">
-                    <h3 className="font-bold text-lg sm:text-xl text-purple-800 mb-3 text-center flex items-center justify-center">
-                      🎥 <span className="ml-2">Our Digital Invitation</span>
-                    </h3>
-                    <p className="text-sm text-gray-700 mb-4 text-center">
-                      Watch our beautiful digital invitation video
-                    </p>
-                    
-                    {/* Embedded Google Drive Video */}
-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg">
-                      <iframe
-                        src="https://drive.google.com/file/d/1omBM_PDkiYR-gEzeTukqzf_Ninv066N8/preview"
-                        title="Aayush & Tanya Wedding Invitation Video"
-                        className="absolute inset-0 w-full h-full"
-                        allowFullScreen
-                        loading="eager"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        style={{
-                          border: 'none',
-                          borderRadius: '12px',
-                          transform: 'translateZ(0)', // Hardware acceleration
-                          WebkitTransform: 'translateZ(0)'
-                        }}
-                      />
-                    </div>
-                    
-                    {/* Fallback message */}
-                    <div className="mt-3 text-center">
-                      <p className="text-xs text-gray-500">
-                        Having trouble viewing? 
-                        <a 
-                          href="https://drive.google.com/file/d/1omBM_PDkiYR-gEzeTukqzf_Ninv066N8/view?usp=sharing"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 underline ml-1"
-                        >
-                          Open in new tab
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
 
 
                 {/* Action Buttons */}

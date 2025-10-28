@@ -20,9 +20,14 @@ interface EventData {
   icon: React.ReactNode;
   color: string;
   bgColor: string;
+  date: string;
 }
 
-const WeddingSchedule = React.memo(() => {
+interface WeddingScheduleProps {
+  showOnlyMarriage?: boolean;
+}
+
+const WeddingSchedule = React.memo(({ showOnlyMarriage = false }: WeddingScheduleProps) => {
   const [activeEventAnimation, setActiveEventAnimation] = useState<string | null>(null);
 
   const events: EventData[] = [
@@ -30,6 +35,7 @@ const WeddingSchedule = React.memo(() => {
       id: 'janehu',
       title: 'Janeu Ceremony',
       time: '11 AM',
+      date: 'Nov 7',
       description: 'A sacred Hindu ritual where the groom receives the sacred thread, marking his readiness for marriage. This traditional ceremony symbolizes spiritual awakening and preparation for a blessed marital union.',
       venue: 'The Green Lounge Wazirpur',
       venueAddress: 'The Green Lounge, Wazirpur, Delhi, India',
@@ -42,6 +48,7 @@ const WeddingSchedule = React.memo(() => {
       id: 'haldi',
       title: 'Haldi Ceremony',
       time: '12 PM',
+      date: 'Nov 7',
       description: 'A vibrant pre-wedding ceremony where turmeric paste and sacred threads are applied to the bride and groom. This auspicious ritual purifies, strengthens their bond, and brings good luck for their married life ahead.',
       venue: 'The Green Lounge Wazirpur',
       venueAddress: 'The Green Lounge, Wazirpur, Delhi, India',
@@ -54,6 +61,7 @@ const WeddingSchedule = React.memo(() => {
       id: 'engagement',
       title: 'Engagement Ceremony',
       time: '8 PM',
+      date: 'Nov 7',
       description: 'An intimate ceremony where families exchange rings and formalize the commitment between the couple. This joyous celebration marks the official beginning of their journey towards matrimonial union.',
       venue: 'The Grandeur by Lavanya',
       venueAddress: 'The Grandeur by Lavanya, banquet hall, Delhi, India',
@@ -64,9 +72,10 @@ const WeddingSchedule = React.memo(() => {
     },
     {
       id: 'saat-shagun',
-      title: 'Blessing Ceremony',
-      time: '11 AM',
-      description: 'A sacred prayer ceremony where elders bless the couple and seek divine protection for their marriage. This spiritual ritual ensures a blessed beginning and heavenly guidance throughout their life together.',
+      title: 'Sehrabandi',
+      time: '6:30 PM',
+      date: 'Nov 8',
+      description: 'A traditional ceremony where the groom receives the sacred turban (sehra) and sword, symbolizing his readiness to protect and honor his bride. This auspicious ritual marks the beginning of the final journey to marriage.',
       venue: 'Salt Stayz',
       venueAddress: 'Salt Stayz Hotel, Delhi, India',
       venueImage: saltStaysImage,
@@ -78,6 +87,7 @@ const WeddingSchedule = React.memo(() => {
       id: 'shaadi',
       title: 'Wedding Ceremony',
       time: '8 PM',
+      date: 'Nov 8',
       description: 'The grand finale where Aayush and Tanya officially become husband and wife in the presence of family and friends. This beautiful ceremony sanctifies their eternal bond with sacred vows, fire rituals, and seven sacred steps.',
       venue: 'The Grand Dreams Mayapuri',
       venueAddress: 'The Grand Dreams Mayapuri, Mayapuri Industrial Area, Delhi',
@@ -87,6 +97,15 @@ const WeddingSchedule = React.memo(() => {
       bgColor: 'bg-gradient-to-br from-red-50 to-rose-50',
     },
   ];
+
+  // Filter events based on showOnlyMarriage
+  const filteredEvents = showOnlyMarriage 
+    ? events.filter(event => event.id === 'shaadi')
+    : events;
+
+  // Group events by date
+  const nov7Events = filteredEvents.filter(event => event.date === 'Nov 7');
+  const nov8Events = filteredEvents.filter(event => event.date === 'Nov 8');
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -149,6 +168,7 @@ const WeddingSchedule = React.memo(() => {
         </motion.div>
 
         {/* November 7 */}
+        {nov7Events.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -176,7 +196,7 @@ const WeddingSchedule = React.memo(() => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-10 relative"
+            className={`grid grid-cols-1 ${nov7Events.length === 1 ? 'lg:grid-cols-1' : nov7Events.length === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-10 relative`}
           >
             {/* Background Animation Layer */}
             <motion.div
@@ -190,7 +210,7 @@ const WeddingSchedule = React.memo(() => {
               transition={{ duration: 8, repeat: Infinity }}
               className="absolute inset-0 pointer-events-none"
             />
-            {events.slice(0, 3).map((event, index) => (
+            {nov7Events.map((event, index) => (
               <motion.div
                 key={event.id}
                 variants={itemVariants}
@@ -277,9 +297,10 @@ const WeddingSchedule = React.memo(() => {
             ))}
           </motion.div>
         </motion.div>
+        )}
 
         {/* November 8 Events */}
-        
+        {nov8Events.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -306,9 +327,9 @@ const WeddingSchedule = React.memo(() => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            className={`grid grid-cols-1 ${nov8Events.length === 1 ? 'lg:grid-cols-1' : nov8Events.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2'} gap-8`}
           >
-            {events.slice(3).map((event, index) => (
+            {nov8Events.map((event, index) => (
               <motion.div
                 key={event.id}
                 variants={itemVariants}
@@ -347,7 +368,7 @@ const WeddingSchedule = React.memo(() => {
                   <div className="relative z-10">
                   <motion.div
                     animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: (index + 3) * 0.5 }}
+                    transition={{ duration: 2, repeat: Infinity, delay: index * 0.5 }}
                     className={`${event.color} mb-4 inline-block`}
                   >
                     {event.icon}
@@ -395,6 +416,7 @@ const WeddingSchedule = React.memo(() => {
             ))}
           </motion.div>
         </motion.div>
+        )}
       </div>
     </section>
   );

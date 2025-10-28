@@ -1,3 +1,4 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { lazy, Suspense } from 'react';
 import Navigation from './components/Navigation';
@@ -10,20 +11,20 @@ import { Analytics } from '@vercel/analytics/react';
 // Lazy load heavy components
 const PhotoEditor = lazy(() => import('./components/PhotoEditor'));
 
-function App() {
+function WeddingContent({ showOnlyMarriage = false }: { showOnlyMarriage?: boolean }) {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <Navigation />
+      <Navigation showOnlyMarriage={showOnlyMarriage} />
       
       {/* Hero Section */}
       <section id="home">
-        <HeroSection />
+        <HeroSection showOnlyMarriage={showOnlyMarriage} />
       </section>
 
       {/* Wedding Schedule */}
       <section id="schedule">
-        <WeddingSchedule />
+        <WeddingSchedule showOnlyMarriage={showOnlyMarriage} />
       </section>
 
       {/* Photo Gallery */}
@@ -104,11 +105,22 @@ function App() {
       </motion.footer>
       
       {/* Music Player */}
-      <MusicPlayer />
+      <MusicPlayer showOnlyMarriage={showOnlyMarriage} />
       
       {/* Analytics */}
       <Analytics />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<WeddingContent showOnlyMarriage={false} />} />
+        <Route path="/marriage" element={<WeddingContent showOnlyMarriage={true} />} />
+      </Routes>
+    </Router>
   );
 }
 
