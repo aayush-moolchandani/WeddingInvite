@@ -6,7 +6,7 @@ interface NavigationProps {
   showOnlyMarriage?: boolean;
 }
 
-const Navigation = ({ showOnlyMarriage = false }: NavigationProps) => {
+const Navigation = ({ }: NavigationProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [showNavbar, setShowNavbar] = useState(false);

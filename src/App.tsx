@@ -15,7 +15,7 @@ function WeddingContent({ showOnlyMarriage = false }: { showOnlyMarriage?: boole
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <Navigation showOnlyMarriage={showOnlyMarriage} />
+      <Navigation />
       
       {/* Hero Section */}
       <section id="home">
